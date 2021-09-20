@@ -1,7 +1,6 @@
 const path = require('path')
 
 module.exports = {
-    mode: 'development',
     entry: './src/index.ts',
     module: {
         rules: [
@@ -14,10 +13,6 @@ module.exports = {
     },
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
-    },
-    devtool: 'inline-source-map',
-    devServer: {
-        static: './dist',
     },
     output: {
         filename: 'main.js',
