@@ -2,14 +2,21 @@
   "name": "dice-webgl-renderer",
   "version": "0.0.1",
   "description": "Simple WebGL renderer",
-  "main": "index.js",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "webpack --watch",
+    "start": "webpack serve --open",
+    "build": "webpack"
   },
   "author": "Rory Dungan <contact@rorydungan.com>",
   "license": "MIT",
   "devDependencies": {
     "webpack": "^5.53.0",
-    "webpack-cli": "^4.8.0"
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^4.2.1"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
   }
 }
