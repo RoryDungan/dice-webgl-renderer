@@ -1,2 +1,6 @@
+# Generated files
 node_modules
 dist
+
+# User-specific config
+.vscode
