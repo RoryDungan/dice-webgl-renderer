@@ -1,5 +1,6 @@
 import vertexShaderSource from './shaders/helloworld.vert'
 import fragmentShaderSource from './shaders/helloworld.frag'
+import { observeAndResizeCanvas } from './webglUtils'
 
 const canvas: HTMLCanvasElement = document.querySelector('#c')
 
@@ -80,19 +81,28 @@ gl.vertexAttribPointer(
   offset
 )
 
-//TODO: resize canvas
+const resizer = observeAndResizeCanvas(gl.canvas, [300, 150])
 
-gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
+// resize canvas
+const drawScene = () => {
+  resizer.resizeCanvasToDisplaySize()
 
-// Clear the canvas
-gl.clearColor(0, 0, 0, 1)
-gl.clear(gl.COLOR_BUFFER_BIT)
+  gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
 
-// Tell it to use our program (pair of shaders)
-gl.useProgram(program)
+  // Clear the canvas
+  gl.clearColor(0, 0, 0, 0)
+  gl.clear(gl.COLOR_BUFFER_BIT)
 
-// Bind the attribute/buffer set we want.
-gl.bindVertexArray(vao)
+  // Tell it to use our program (pair of shaders)
+  gl.useProgram(program)
 
-const primitiveType = gl.TRIANGLES
-gl.drawArrays(primitiveType, 0, 3)
+  // Bind the attribute/buffer set we want.
+  gl.bindVertexArray(vao)
+
+  const primitiveType = gl.TRIANGLES
+  gl.drawArrays(primitiveType, 0, 3)
+
+  requestAnimationFrame(drawScene)
+}
+
+requestAnimationFrame(drawScene)
