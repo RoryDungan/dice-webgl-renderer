@@ -1,0 +1,11 @@
+{
+  "name": "dice-webgl-renderer",
+  "version": "0.0.1",
+  "description": "Simple WebGL renderer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rory Dungan <contact@rorydungan.com>",
+  "license": "MIT"
+}
