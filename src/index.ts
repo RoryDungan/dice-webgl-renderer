@@ -1,12 +1,12 @@
 import * as _ from 'lodash'
 
 function component() {
-    const element = document.createElement('div')
+  console.log('hello!')
+  const element = document.createElement('div')
 
-    element.innerHTML = _.join(['Hello', 'webpack'], ' ')
+  element.innerHTML = _.join(['Hullo', 'webpack'], ' ')
 
-    return element
+  return element
 }
 
 document.body.appendChild(component())
-
