@@ -1,10 +1,11 @@
-import vertexShaderSource from './shaders/scaling.vert'
+import vertexShaderSource from './shaders/2d-transform-matrix.vert'
 import fragmentShaderSource from './shaders/helloworld.frag'
 import {
   createProgramFromSources,
   resizeCanvasToDisplaySize,
 } from './webglUtils'
 import * as webglLessonsUI from './webgl-lessons-ui'
+import { m3 } from './math'
 
 const main = () => {
   // Get a WebGL 2 context
@@ -24,15 +25,8 @@ const main = () => {
   const positionAttributeLocation = gl.getAttribLocation(program, 'a_position')
 
   // look up uniform locations
-  const resolutionUniformLocation = gl.getUniformLocation(
-    program,
-    'u_resolution'
-  )
   const colorLocation = gl.getUniformLocation(program, 'u_color')
-
-  const translationLocation = gl.getUniformLocation(program, 'u_translation')
-  const rotationLocation = gl.getUniformLocation(program, 'u_rotation')
-  const scaleLocation = gl.getUniformLocation(program, 'u_scale')
+  const matrixLocation = gl.getUniformLocation(program, 'u_matrix')
 
   // Create a buffer and put three 2d clip space points in it
   const positionBuffer = gl.createBuffer()
@@ -69,8 +63,8 @@ const main = () => {
 
   // First let's make some variables
   // to hold the translation, width and height of the rectangle
-  const translation = [0, 0]
-  const rotation = [0, 1]
+  const translation = [150, 100]
+  let rotationInRadians = 0
   const scale = [1, 1]
   // const width = 100
   // const height = 30
@@ -117,9 +111,7 @@ const main = () => {
 
   function updateRotation(event: Event, ui: { value: number }) {
     const degrees = 360 - ui.value
-    const rads = (Math.PI / 180) * degrees
-    rotation[0] = Math.sin(rads)
-    rotation[1] = Math.cos(rads)
+    rotationInRadians = (Math.PI / 180) * degrees
     drawScene()
   }
 
@@ -146,21 +138,30 @@ const main = () => {
     // Bind the attribute/buffer set we want
     gl.bindVertexArray(vao)
 
-    // Pass in the canvas resolution so we can convert from
-    // pixels to clipspace in the shader
-    gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height)
+    // Compute the matrics
+    const projectionMatrix = m3.projection(
+      gl.canvas.clientWidth,
+      gl.canvas.clientHeight
+    )
+    const moveOriginMatrix = m3.translation(-50, -75)
+    const translationMatrix = m3.translation(translation[0], translation[1])
+    const rotationMatrix = m3.rotation(rotationInRadians)
+    const scaleMatrix = m3.scaling(scale[0], scale[1])
+
+    // Multiply the matrics
+    const matrix = [
+      projectionMatrix,
+      translationMatrix,
+      rotationMatrix,
+      scaleMatrix,
+      moveOriginMatrix,
+    ].reduce(m3.multiply)
+
+    // Set the matrix
+    gl.uniformMatrix3fv(matrixLocation, false, matrix)
 
     // Set a random color
     gl.uniform4fv(colorLocation, color)
-
-    // Set the translation
-    gl.uniform2fv(translationLocation, translation)
-
-    // Set the rotation
-    gl.uniform2fv(rotationLocation, rotation)
-
-    // Set the scale
-    gl.uniform2fv(scaleLocation, scale)
 
     // Draw
     const primitiveType = gl.TRIANGLES
@@ -168,24 +169,6 @@ const main = () => {
     const count = 18
     gl.drawArrays(primitiveType, offset, count)
   }
-
-  // function setRectangle(
-  //   gl: WebGL2RenderingContext,
-  //   x: number,
-  //   y: number,
-  //   width: number,
-  //   height: number
-  // ) {
-  //   const x1 = x
-  //   const x2 = x + width
-  //   const y1 = y
-  //   const y2 = y + height
-  //   gl.bufferData(
-  //     gl.ARRAY_BUFFER,
-  //     new Float32Array([x1, y1, x2, y1, x1, y2, x1, y2, x2, y1, x2, y2]),
-  //     gl.STATIC_DRAW
-  //   )
-  // }
 
   function setGeometry(gl: WebGL2RenderingContext) {
     gl.bufferData(
