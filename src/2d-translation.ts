@@ -1,4 +1,4 @@
-import vertexShaderSource from './shaders/rotation.vert'
+import vertexShaderSource from './shaders/scaling.vert'
 import fragmentShaderSource from './shaders/helloworld.frag'
 import {
   createProgramFromSources,
@@ -32,6 +32,7 @@ const main = () => {
 
   const translationLocation = gl.getUniformLocation(program, 'u_translation')
   const rotationLocation = gl.getUniformLocation(program, 'u_rotation')
+  const scaleLocation = gl.getUniformLocation(program, 'u_scale')
 
   // Create a buffer and put three 2d clip space points in it
   const positionBuffer = gl.createBuffer()
@@ -70,6 +71,7 @@ const main = () => {
   // to hold the translation, width and height of the rectangle
   const translation = [0, 0]
   const rotation = [0, 1]
+  const scale = [1, 1]
   // const width = 100
   // const height = 30
   const color = [Math.random(), Math.random(), Math.random(), 1]
@@ -89,9 +91,25 @@ const main = () => {
     slide: updateRotation,
     max: 360,
   })
+  webglLessonsUI.setupSlider('#scaleX', {
+    value: scale[0],
+    slide: updateScale(0),
+    min: -5,
+    max: 5,
+    step: 0.01,
+    precision: 2,
+  })
+  webglLessonsUI.setupSlider('#scaleY', {
+    value: scale[1],
+    slide: updateScale(1),
+    min: -5,
+    max: 5,
+    step: 0.01,
+    precision: 2,
+  })
 
   function updatePosition(index: number) {
-    return function (event: Event, ui: { value: number }) {
+    return (event: Event, ui: { value: number }) => {
       translation[index] = ui.value
       drawScene()
     }
@@ -103,6 +121,13 @@ const main = () => {
     rotation[0] = Math.sin(rads)
     rotation[1] = Math.cos(rads)
     drawScene()
+  }
+
+  function updateScale(index: number) {
+    return (event: Event, ui: { value: number }) => {
+      scale[index] = ui.value
+      drawScene()
+    }
   }
 
   function drawScene() {
@@ -133,6 +158,9 @@ const main = () => {
 
     // Set the rotation
     gl.uniform2fv(rotationLocation, rotation)
+
+    // Set the scale
+    gl.uniform2fv(scaleLocation, scale)
 
     // Draw
     const primitiveType = gl.TRIANGLES
