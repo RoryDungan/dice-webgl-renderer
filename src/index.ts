@@ -2,6 +2,33 @@ import vertexShaderSource from './shaders/helloworld.vert'
 import fragmentShaderSource from './shaders/helloworld.frag'
 import { createProgramFromSources, observeAndResizeCanvas } from './webglUtils'
 
+// Returns a random integer from 0 to range - 1
+const randomInt = (range: number): number => Math.floor(Math.random() * range)
+
+// Fills the buffer with the values that define a rectangle.
+const setRectangle = (
+  gl: WebGL2RenderingContext,
+  x: number,
+  y: number,
+  width: number,
+  height: number
+) => {
+  const x1 = x
+  const x2 = x + width
+  const y1 = y
+  const y2 = y + height
+
+  // NOTE: gl.bufferData(gl.ARRAY_BUFFER, ...) will affect
+  // whatever buffer is bound to the `ARRAY_BUFFER` bind point
+  // but so far we only have one buffer. If we had more than one
+  // buffer we'd want to bind that buffer to `ARRAY_BUFFER` first.
+  gl.bufferData(
+    gl.ARRAY_BUFFER,
+    new Float32Array([x1, y1, x2, y1, x1, y2, x1, y2, x2, y1, x2, y2]),
+    gl.STATIC_DRAW
+  )
+}
+
 const main = () => {
   // Get a WebGL 2 context
   const canvas: HTMLCanvasElement = document.querySelector('#c')
@@ -24,15 +51,17 @@ const main = () => {
     program,
     'u_resolution'
   )
+  const colorLocation = gl.getUniformLocation(program, 'u_color')
 
   // Create a buffer and put three 2d clip space points in it
   const positionBuffer = gl.createBuffer()
 
   // Bind it to ARRAY_BUFFER
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
+
   // three 2d points
-  const positions = [10, 20, 80, 20, 10, 30, 10, 30, 80, 20, 80, 30]
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW)
+  // const positions = [10, 20, 80, 20, 10, 30, 10, 30, 80, 20, 80, 30]
+  // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW)
 
   // Create a vertex array object
   const vao = gl.createVertexArray()
@@ -73,19 +102,38 @@ const main = () => {
     // Tell it to use our program (pair of shaders)
     gl.useProgram(program)
 
-    // Pass in the canvas resolution so we can convert from pizels to clip space in the shader
-    gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height)
-
     // Bind the attribute/buffer set we want.
     gl.bindVertexArray(vao)
 
-    // draw
-    const primitiveType = gl.TRIANGLES
-    const offset = 0
-    const count = 6
-    gl.drawArrays(primitiveType, offset, count)
+    // Pass in the canvas resolution so we can convert from pizels to clip space in the shader
+    gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height)
 
-    requestAnimationFrame(drawScene)
+    // draw
+    for (let i = 0; i < 50; ++i) {
+      // Setup a random rectangle
+      setRectangle(
+        gl,
+        randomInt(300),
+        randomInt(300),
+        randomInt(300),
+        randomInt(300)
+      )
+
+      // Set a random colour
+      gl.uniform4f(
+        colorLocation,
+        Math.random(),
+        Math.random(),
+        Math.random(),
+        1
+      )
+
+      // Draw the rectangle
+      const primitiveType = gl.TRIANGLES
+      const offset = 0
+      const count = 6
+      gl.drawArrays(primitiveType, offset, count)
+    }
   }
 
   requestAnimationFrame(drawScene)
