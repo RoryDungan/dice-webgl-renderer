@@ -5,6 +5,9 @@ module.exports = merge(common, {
   mode: 'production',
   devtool: 'source-map',
   optimization: {
-    minimize: false
+    minimize: true
+  },
+  output: {
+    publicPath: '/dice-webgl-renderer/'
   }
 })
