@@ -1,4 +1,4 @@
-import vertexShaderSource from './shaders/translation.vert'
+import vertexShaderSource from './shaders/rotation.vert'
 import fragmentShaderSource from './shaders/helloworld.frag'
 import {
   createProgramFromSources,
@@ -31,6 +31,7 @@ const main = () => {
   const colorLocation = gl.getUniformLocation(program, 'u_color')
 
   const translationLocation = gl.getUniformLocation(program, 'u_translation')
+  const rotationLocation = gl.getUniformLocation(program, 'u_rotation')
 
   // Create a buffer and put three 2d clip space points in it
   const positionBuffer = gl.createBuffer()
@@ -68,6 +69,7 @@ const main = () => {
   // First let's make some variables
   // to hold the translation, width and height of the rectangle
   const translation = [0, 0]
+  const rotation = [0, 1]
   // const width = 100
   // const height = 30
   const color = [Math.random(), Math.random(), Math.random(), 1]
@@ -83,12 +85,24 @@ const main = () => {
     slide: updatePosition(1),
     max: gl.canvas.height,
   })
+  webglLessonsUI.setupSlider('#r', {
+    slide: updateRotation,
+    max: 360,
+  })
 
   function updatePosition(index: number) {
     return function (event: Event, ui: { value: number }) {
       translation[index] = ui.value
       drawScene()
     }
+  }
+
+  function updateRotation(event: Event, ui: { value: number }) {
+    const degrees = 360 - ui.value
+    const rads = (Math.PI / 180) * degrees
+    rotation[0] = Math.sin(rads)
+    rotation[1] = Math.cos(rads)
+    drawScene()
   }
 
   function drawScene() {
@@ -116,6 +130,9 @@ const main = () => {
 
     // Set the translation
     gl.uniform2fv(translationLocation, translation)
+
+    // Set the rotation
+    gl.uniform2fv(rotationLocation, rotation)
 
     // Draw
     const primitiveType = gl.TRIANGLES
