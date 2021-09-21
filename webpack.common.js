@@ -2,7 +2,9 @@ const path = require('path')
 const ESLintPlugin = require('eslint-webpack-plugin')
 
 module.exports = {
-  entry: './src/index.ts',
+  entry: {
+    fundamentals: './src/fundamentals.ts'
+  },
   module: {
     rules: [
       {
@@ -20,7 +22,7 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
-    filename: 'main.js',
+    filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
   plugins: [
