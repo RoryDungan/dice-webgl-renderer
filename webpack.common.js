@@ -3,7 +3,8 @@ const ESLintPlugin = require('eslint-webpack-plugin')
 
 module.exports = {
   entry: {
-    fundamentals: './src/fundamentals.ts'
+    fundamentals: './src/fundamentals.ts',
+    '2d-translation': './src/2d-translation.ts',
   },
   module: {
     rules: [
