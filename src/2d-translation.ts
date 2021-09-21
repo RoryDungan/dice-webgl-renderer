@@ -3,6 +3,7 @@ import fragmentShaderSource from './shaders/helloworld.frag'
 import {
   createProgramFromSources,
   resizeCanvasToDisplaySize,
+  showWebGLUnsupportedError,
 } from './webglUtils'
 import * as webglLessonsUI from './webgl-lessons-ui'
 import { m3 } from './math'
@@ -13,6 +14,8 @@ const main = () => {
   const gl = canvas.getContext('webgl2')
   if (!gl) {
     console.error("Couldn't activate webgl2 context")
+    showWebGLUnsupportedError(canvas.parentElement)
+    return
   }
 
   // Lint the two shaders into a program

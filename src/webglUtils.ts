@@ -132,3 +132,22 @@ export const createProgramFromSources = (
     createShader(gl, gl.FRAGMENT_SHADER, frag),
   ])
 }
+
+export const showWebGLUnsupportedError = (parentElement: Element): void => {
+  const errorMessage = document.createElement('div')
+  errorMessage.className = 'error'
+  const p1 = document.createElement('p')
+  p1.appendChild(
+    document.createTextNode(
+      "Sorry, your browser doesn't seem to support WebGL 2 :("
+    )
+  )
+  errorMessage.appendChild(p1)
+  const p2 = document.createElement('p')
+
+  p2.appendChild(
+    document.createTextNode('Try running in the latest Firefox or Chrome.')
+  )
+  errorMessage.appendChild(p2)
+  parentElement.appendChild(errorMessage)
+}
