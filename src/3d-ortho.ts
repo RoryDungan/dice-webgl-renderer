@@ -171,6 +171,9 @@ const main = () => {
   function drawScene() {
     resizeCanvasToDisplaySize(gl.canvas, window.devicePixelRatio)
 
+    gl.enable(gl.CULL_FACE)
+    gl.enable(gl.DEPTH_TEST)
+
     // Tell WebGL hot to convert from clip space to pixels
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
 
@@ -208,30 +211,31 @@ const main = () => {
     // prettier-ignore
     gl.bufferData(
       gl.ARRAY_BUFFER,
-      new Float32Array([
+      new Float32Array(
+        [
           // left column front
-            0,   0,  0,
-           30,   0,  0,
-            0, 150,  0,
-            0, 150,  0,
-           30,   0,  0,
-           30, 150,  0,
+          0,   0,  0,
+          0, 150,  0,
+          30,   0,  0,
+          0, 150,  0,
+          30, 150,  0,
+          30,   0,  0,
 
           // top rung front
-           30,   0,  0,
+          30,   0,  0,
+          30,  30,  0,
           100,   0,  0,
-           30,  30,  0,
-           30,  30,  0,
-          100,   0,  0,
+          30,  30,  0,
           100,  30,  0,
+          100,   0,  0,
 
           // middle rung front
-           30,  60,  0,
-           67,  60,  0,
-           30,  90,  0,
-           30,  90,  0,
-           67,  60,  0,
-           67,  90,  0,
+          30,  60,  0,
+          30,  90,  0,
+          67,  60,  0,
+          30,  90,  0,
+          67,  90,  0,
+          67,  60,  0,
 
           // left column back
             0,   0,  30,
@@ -283,27 +287,27 @@ const main = () => {
 
           // between top rung and middle
           30,   30,   0,
+          30,   60,  30,
           30,   30,  30,
-          30,   60,  30,
           30,   30,   0,
-          30,   60,  30,
           30,   60,   0,
+          30,   60,  30,
 
           // top of middle rung
           30,   60,   0,
+          67,   60,  30,
           30,   60,  30,
-          67,   60,  30,
           30,   60,   0,
-          67,   60,  30,
           67,   60,   0,
+          67,   60,  30,
 
           // right of middle rung
           67,   60,   0,
+          67,   90,  30,
           67,   60,  30,
-          67,   90,  30,
           67,   60,   0,
-          67,   90,  30,
           67,   90,   0,
+          67,   90,  30,
 
           // bottom of middle rung.
           30,   90,   0,
@@ -315,11 +319,11 @@ const main = () => {
 
           // right of bottom
           30,   90,   0,
+          30,  150,  30,
           30,   90,  30,
-          30,  150,  30,
           30,   90,   0,
-          30,  150,  30,
           30,  150,   0,
+          30,  150,  30,
 
           // bottom
           0,   150,   0,
