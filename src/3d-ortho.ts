@@ -187,9 +187,17 @@ const main = () => {
     // Bind the attribute/buffer set we want
     gl.bindVertexArray(vao)
 
+    const left = 0
+    const right = gl.canvas.clientWidth
+    const bottom = gl.canvas.clientHeight
+    const top = 0
+    const near = 400
+    const far = -400
+    const projection = m4.orthographic(left, right, bottom, top, near, far)
+
     // Compute the matrix
     const matrix = [
-      m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 400),
+      projection,
       m4.translation(translation[0], translation[1], translation[2]),
       m4.xRotation(rotation[0]),
       m4.yRotation(rotation[1]),

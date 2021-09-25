@@ -204,14 +204,15 @@ export const m4 = {
     ]
   },
 
-  projection: (width: number, height: number, depth: number): Mat4 => {
-    // Note: This matrix flips the Y axis so 0 is at the top.
-    // prettier-ignore
-    return [
-       2 / width, 0, 0, 0,
-       0, -2 / height, 0, 0,
-       0, 0, 2 / depth, 0,
-      -1, 1, 0, 1,
-    ]
-  },
+  // prettier-ignore
+  orthographic: (left: number, right: number, bottom: number, top: number, near: number, far: number): Mat4 => [
+    2 / (right - left), 0, 0, 0,
+    0, 2 / (top - bottom), 0, 0,
+    0, 0, 2 / (near - far), 0,
+
+    (left + right) / (left - right),
+    (bottom + top) / (bottom - top),
+    (near + far) / (near - far),
+    1,
+  ],
 }
