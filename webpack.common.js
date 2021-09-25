@@ -5,6 +5,7 @@ module.exports = {
   entry: {
     fundamentals: './src/fundamentals.ts',
     '2d-translation': './src/2d-translation.ts',
+    '3d-ortho': './src/3d-ortho.ts'
   },
   module: {
     rules: [
