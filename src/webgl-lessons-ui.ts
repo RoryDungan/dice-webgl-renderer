@@ -37,7 +37,7 @@ type SliderOptions = {
   step?: number
   value?: number
   max?: number
-  name?: string
+  name: string
   uiPrecision?: number
   uiMult?: number
   slide: (evt: Event, data: { value: number }) => void
@@ -49,17 +49,17 @@ type SliderType = {
 }
 
 export function setupSlider(
-  selector: string,
+  parentSelector: string,
   options: SliderOptions
 ): SliderType {
-  const parent = document.querySelector(selector)
-  if (!parent) {
+  const uiParent = document.querySelector(parentSelector)
+  if (!uiParent) {
     // like jquery don't fail on a bad selector
     return
   }
-  if (!options.name) {
-    options.name = selector.substring(1)
-  }
+  const parent = document.createElement('div')
+  uiParent.appendChild(parent)
+
   return createSlider(parent, options) // eslint-disable-line
 }
 

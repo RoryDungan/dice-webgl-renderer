@@ -76,19 +76,23 @@ const main = () => {
   drawScene()
 
   // Setup a ui.
-  webglLessonsUI.setupSlider('#x', {
+  webglLessonsUI.setupSlider('#ui', {
+    name: 'x',
     slide: updatePosition(0),
     max: gl.canvas.width,
   })
-  webglLessonsUI.setupSlider('#y', {
+  webglLessonsUI.setupSlider('#ui', {
+    name: 'y',
     slide: updatePosition(1),
     max: gl.canvas.height,
   })
-  webglLessonsUI.setupSlider('#r', {
+  webglLessonsUI.setupSlider('#ui', {
+    name: 'r',
     slide: updateRotation,
     max: 360,
   })
-  webglLessonsUI.setupSlider('#scaleX', {
+  webglLessonsUI.setupSlider('#ui', {
+    name: 'scaleX',
     value: scale[0],
     slide: updateScale(0),
     min: -5,
@@ -96,7 +100,8 @@ const main = () => {
     step: 0.01,
     precision: 2,
   })
-  webglLessonsUI.setupSlider('#scaleY', {
+  webglLessonsUI.setupSlider('#ui', {
+    name: 'scaleY',
     value: scale[1],
     slide: updateScale(1),
     min: -5,

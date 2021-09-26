@@ -94,37 +94,44 @@ const main = () => {
   drawScene()
 
   // Setup a ui.
-  webglLessonsUI.setupSlider('#x', {
+  webglLessonsUI.setupSlider('#ui', {
+    name: 'x',
     slide: updatePosition(0),
     max: gl.canvas.width,
     value: translation[0],
   })
-  webglLessonsUI.setupSlider('#y', {
+  webglLessonsUI.setupSlider('#ui', {
+    name: 'y',
     slide: updatePosition(1),
     max: gl.canvas.height,
     value: translation[1],
   })
-  webglLessonsUI.setupSlider('#z', {
+  webglLessonsUI.setupSlider('#ui', {
+    name: 'z',
     slide: updatePosition(2),
     max: 400,
     value: translation[2],
   })
-  webglLessonsUI.setupSlider('#angleX', {
+  webglLessonsUI.setupSlider('#ui', {
+    name: 'angleX',
     slide: updateAngle(0),
     max: 360,
     value: radToDeg(rotation[0]),
   })
-  webglLessonsUI.setupSlider('#angleY', {
+  webglLessonsUI.setupSlider('#ui', {
+    name: 'angleY',
     slide: updateAngle(1),
     max: 360,
     value: radToDeg(rotation[1]),
   })
-  webglLessonsUI.setupSlider('#angleZ', {
+  webglLessonsUI.setupSlider('#ui', {
+    name: 'angleZ',
     slide: updateAngle(2),
     max: 360,
     value: radToDeg(rotation[2]),
   })
-  webglLessonsUI.setupSlider('#scaleX', {
+  webglLessonsUI.setupSlider('#ui', {
+    name: 'scaleX',
     value: scale[0],
     slide: updateScale(0),
     min: -5,
@@ -132,7 +139,8 @@ const main = () => {
     step: 0.01,
     precision: 2,
   })
-  webglLessonsUI.setupSlider('#scaleY', {
+  webglLessonsUI.setupSlider('#ui', {
+    name: 'scaleY',
     value: scale[1],
     slide: updateScale(1),
     min: -5,
@@ -140,7 +148,8 @@ const main = () => {
     step: 0.01,
     precision: 2,
   })
-  webglLessonsUI.setupSlider('#scaleZ', {
+  webglLessonsUI.setupSlider('#ui', {
+    name: 'scaleZ',
     value: scale[1],
     slide: updateScale(2),
     min: -5,
