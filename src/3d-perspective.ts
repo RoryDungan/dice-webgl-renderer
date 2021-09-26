@@ -29,9 +29,8 @@ const main = () => {
 
   // look up uniform locations
   const matrixLocation = gl.getUniformLocation(program, 'u_matrix')
-  const fudgeLocation = gl.getUniformLocation(program, 'u_fudgeFactor')
 
-  const fudgeFactor = 1
+  let fieldOfView = degToRad(60)
 
   // Create a buffer
   const positionBuffer = gl.createBuffer()
@@ -87,28 +86,43 @@ const main = () => {
 
   // First let's make some variables
   // to hold the translation,
-  const translation = [45, 150, 0]
-  const rotation = [degToRad(40), degToRad(25), degToRad(325)]
+  const translation = [-150, 0, -360]
+  const rotation = [degToRad(0), degToRad(170), degToRad(170)]
   const scale = [1, 1, 1]
 
   drawScene()
 
   // Setup a ui.
   webglLessonsUI.setupSlider('#ui', {
+    name: 'fieldOfView',
+    slide: (evt, data) => {
+      fieldOfView = degToRad(data.value)
+      drawScene()
+    },
+    min: 10,
+    max: 180,
+    precision: 3,
+    step: 0.01,
+    value: radToDeg(fieldOfView),
+  })
+  webglLessonsUI.setupSlider('#ui', {
     name: 'x',
     slide: updatePosition(0),
+    min: -gl.canvas.width,
     max: gl.canvas.width,
     value: translation[0],
   })
   webglLessonsUI.setupSlider('#ui', {
     name: 'y',
     slide: updatePosition(1),
+    min: -gl.canvas.height,
     max: gl.canvas.height,
     value: translation[1],
   })
   webglLessonsUI.setupSlider('#ui', {
     name: 'z',
     slide: updatePosition(2),
+    min: -400,
     max: 400,
     value: translation[2],
   })
@@ -199,13 +213,10 @@ const main = () => {
     // Bind the attribute/buffer set we want
     gl.bindVertexArray(vao)
 
-    const left = 0
-    const right = gl.canvas.clientWidth
-    const bottom = gl.canvas.clientHeight
-    const top = 0
-    const near = 400
-    const far = -400
-    const projection = m4.orthographic(left, right, bottom, top, near, far)
+    const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight
+    const zNear = 1
+    const zFar = 2000
+    const projection = m4.perspective(fieldOfView, aspect, zNear, zFar)
 
     // Compute the matrix
     const matrix = [
@@ -219,9 +230,6 @@ const main = () => {
 
     // Set the matrix
     gl.uniformMatrix4fv(matrixLocation, false, matrix)
-
-    // Set the fudgeFactor
-    gl.uniform1f(fudgeLocation, fudgeFactor)
 
     // Draw
     const primitiveType = gl.TRIANGLES
