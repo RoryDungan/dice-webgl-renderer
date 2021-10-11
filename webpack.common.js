@@ -6,7 +6,8 @@ module.exports = {
     fundamentals: './src/fundamentals.ts',
     '2d-translation': './src/2d-translation.ts',
     '3d-ortho': './src/3d-ortho.ts',
-    '3d-perspective': './src/3d-perspective.ts'
+    '3d-perspective': './src/3d-perspective.ts',
+    '3d-camera': './src/3d-camera.ts',
   },
   module: {
     rules: [
