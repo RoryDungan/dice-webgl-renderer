@@ -13,11 +13,41 @@ export type Mat4 = [
   number, number, number, number,
 ]
 
+export type Vec3 = [number, number, number]
 export type Vec4 = [number, number, number, number]
 
 export const degToRad = (degrees: number): number => (degrees * Math.PI) / 180
 
 export const radToDeg = (radians: number): number => (radians * 180) / Math.PI
+
+export const cross = (a: Vec3, b: Vec3): Vec3 => [
+  a[1] * b[2] - a[2] * b[1],
+  a[2] * b[0] - a[0] * b[2],
+  a[0] * b[1] - a[1] * b[0],
+]
+
+export const subtractVectors = (a: Vec3, b: Vec3): Vec3 => [
+  a[0] - b[0],
+  a[1] - b[1],
+  a[2] - b[2],
+]
+
+export const magnitude = (v: Vec3): number =>
+  Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
+
+export const normalise = (v: Vec3): Vec3 => {
+  const length = magnitude(v)
+  // make sure we don't divide by 0
+  if (length > 0.00001) {
+    return [v[0] / length, v[1] / length, v[2] / length]
+  } else {
+    return [0, 0, 0]
+  }
+}
+
+export const right = (): Vec3 => [1, 0, 0]
+export const up = (): Vec3 => [0, 1, 0]
+export const forward = (): Vec3 => [0, 0, 1]
 
 export const m3 = {
   multiply: (a: Mat3, b: Mat3): Mat3 => {
@@ -58,7 +88,7 @@ export const m3 = {
   translation: (tx: number, ty: number): Mat3 => [
     1, 0, 0,
     0, 1, 0,
-    tx,ty,1,
+    tx, ty, 1,
   ],
 
   rotation: (angleRads: number): Mat3 => {
@@ -66,7 +96,7 @@ export const m3 = {
     const s = Math.sin(angleRads)
     // prettier-ignore
     return [
-      c,-s, 0,
+      c, -s, 0,
       s, c, 0,
       0, 0, 1,
     ]
@@ -75,8 +105,8 @@ export const m3 = {
   // prettier-ignore
   scaling: (sx: number, sy: number): Mat3 => [
     sx, 0, 0,
-     0,sy, 0,
-     0, 0, 1,
+    0, sy, 0,
+    0, 0, 1,
   ],
 
   // prettier-ignore
@@ -98,9 +128,9 @@ export const m3 = {
 export const m4 = {
   // prettier-ignore
   translation: (tx: number, ty: number, tz: number): Mat4 => [
-    1,  0,  0,  0,
-    0,  1,  0,  0,
-    0,  0,  1,  0,
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
     tx, ty, tz, 1
   ],
 
@@ -137,7 +167,7 @@ export const m4 = {
     // prettier-ignore
     return [
       c, s, 0, 0,
-     -s, c, 0, 0,
+      -s, c, 0, 0,
       0, 0, 1, 0,
       0, 0, 0, 1,
     ]
@@ -145,10 +175,10 @@ export const m4 = {
 
   // prettier-ignore
   scaling: (sx: number, sy: number, sz: number): Mat4 => [
-    sx, 0,  0,  0,
-    0, sy,  0,  0,
-    0,  0, sz,  0,
-    0,  0,  0,  1
+    sx, 0, 0, 0,
+    0, sy, 0, 0,
+    0, 0, sz, 0,
+    0, 0, 0, 1
   ],
 
   multiply: (a: Mat4, b: Mat4): Mat4 => {
@@ -378,5 +408,19 @@ export const m4 = {
       }
     }
     return dst
+  },
+
+  lookAt: (cameraPosition: Vec3, target: Vec3, up: Vec3): Mat4 => {
+    const zAxis = normalise(subtractVectors(cameraPosition, target))
+    const xAxis = normalise(cross(up, zAxis))
+    const yAxis = normalise(cross(zAxis, xAxis))
+
+    // prettier-ignore
+    return [
+      xAxis[0], xAxis[1], xAxis[2], 0,
+      yAxis[0], yAxis[1], yAxis[2], 0,
+      zAxis[0], zAxis[1], zAxis[2], 0,
+      cameraPosition[0], cameraPosition[1], cameraPosition[2], 1
+    ]
   },
 }

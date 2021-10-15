@@ -6,7 +6,7 @@ import {
   showWebGLUnsupportedError,
 } from './webglUtils'
 import * as webglLessonsUI from './webgl-lessons-ui'
-import { degToRad, m4, radToDeg } from './math'
+import { degToRad, m4, up, Vec3 } from './math'
 
 const main = () => {
   // Get A WebGL context
@@ -84,24 +84,37 @@ const main = () => {
 
   const fieldOfViewRadians = degToRad(60)
   let cameraAngleRadians = 0
+  let rotationSpeed = 1.2
   const numFs = 5
   const radius = 200
 
-  drawScene()
+  let then = 0
+
+  requestAnimationFrame(drawScene)
 
   // Setup a ui.
   webglLessonsUI.setupSlider('#ui', {
-    name: 'cameraAngle',
+    name: 'rotationSpeed',
     slide: (evt, data) => {
-      cameraAngleRadians = degToRad(data.value)
-      drawScene()
+      rotationSpeed = data.value
     },
-    min: -360,
-    max: 360,
-    value: radToDeg(cameraAngleRadians),
+    precision: 2,
+    step: 0.01,
+    min: -5,
+    max: 5,
+    value: rotationSpeed,
   })
 
-  function drawScene() {
+  function drawScene(now: number) {
+    // Convert the time to seconds
+    now *= 0.001
+    // Subtract the previous time from the current time
+    const deltaTime = now - then
+    // Remember the current time for the next frame
+    then = now
+
+    cameraAngleRadians += rotationSpeed * deltaTime
+
     resizeCanvasToDisplaySize(gl.canvas, window.devicePixelRatio)
 
     gl.enable(gl.CULL_FACE)
@@ -130,13 +143,27 @@ const main = () => {
       zFar
     )
 
+    // Compute the position of the first F
+    const fPosition: Vec3 = [radius, 0, 0]
+
+    // Use matrix math to compute a position on the circle.
     const cameraMatrix = m4.multiply(
       m4.yRotation(cameraAngleRadians),
-      m4.translation(0, 0, radius * 1.5)
+      m4.translation(0, 50, radius * 1.5)
     )
 
+    // Get the camera's position from the matrix we computed
+    const cameraPosition: Vec3 = [
+      cameraMatrix[12],
+      cameraMatrix[13],
+      cameraMatrix[14],
+    ]
+
+    // Compute the camera's matrix using look at.
+    const lookAtMatrix = m4.lookAt(cameraPosition, fPosition, up())
+
     // Make a view matrix from the camera matrix.
-    const viewMatrix = m4.inverse(cameraMatrix)
+    const viewMatrix = m4.inverse(lookAtMatrix)
 
     // move the projection space to view space (the space in front of the camera)
     const viewProjectionMatrix = m4.multiply(projectionMatrix, viewMatrix)
@@ -158,6 +185,8 @@ const main = () => {
       const count = 16 * 6
       gl.drawArrays(primitiveType, offset, count)
     }
+
+    requestAnimationFrame(drawScene)
   }
 
   function setGeometry(gl: WebGL2RenderingContext) {
