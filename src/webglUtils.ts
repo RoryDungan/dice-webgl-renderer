@@ -99,8 +99,10 @@ const createShader = (
     return shader
   }
 
-  console.error(gl.getShaderInfoLog(shader))
+  const error = gl.getShaderInfoLog(shader)
   gl.deleteShader(shader)
+
+  throw new Error(`Error compiling shader:\n${error}`)
 }
 
 const createProgram = (
@@ -118,8 +120,10 @@ const createProgram = (
     return program
   }
 
-  console.error(gl.getProgramInfoLog(program))
+  const error = gl.getProgramInfoLog(program)
   gl.deleteProgram(program)
+
+  throw new Error(`Error creating program:\n${error}`)
 }
 
 export const createProgramFromSources = (
