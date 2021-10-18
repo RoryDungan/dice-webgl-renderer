@@ -127,6 +127,22 @@ export const m3 = {
 
 export const m4 = {
   // prettier-ignore
+  identity: (): Mat4 => [
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1,
+  ],
+
+  // prettier-ignore
+  transpose: (m: Mat4): Mat4 => [
+    m[0], m[4], m[8], m[12],
+    m[1], m[5], m[9], m[13],
+    m[2], m[6], m[10], m[14],
+    m[2], m[7], m[11], m[15],
+  ],
+
+  // prettier-ignore
   translation: (tx: number, ty: number, tz: number): Mat4 => [
     1, 0, 0, 0,
     0, 1, 0, 0,

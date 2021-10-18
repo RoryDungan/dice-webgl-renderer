@@ -8,6 +8,7 @@ module.exports = {
     '3d-ortho': './src/3d-ortho.ts',
     '3d-perspective': './src/3d-perspective.ts',
     '3d-camera': './src/3d-camera.ts',
+    '3d-shading': './src/3d-shading.ts',
   },
   module: {
     rules: [
