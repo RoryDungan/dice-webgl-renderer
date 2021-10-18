@@ -37,9 +37,20 @@ const main = () => {
     'u_worldInverseTranspose'
   )
   const colorLocation = gl.getUniformLocation(program, 'u_color')
-  const reverseLightDirectionLocation = gl.getUniformLocation(
+  const lightWorldPositionLocation = gl.getUniformLocation(
     program,
-    'u_reverseLightDirection'
+    'u_lightWorldPosition'
+  )
+  const viewWorldPositionLocation = gl.getUniformLocation(
+    program,
+    'u_viewWorldPosition'
+  )
+  const worldLocation = gl.getUniformLocation(program, 'u_world')
+  const shininessLocation = gl.getUniformLocation(program, 'u_shininess')
+  const lightColorLocation = gl.getUniformLocation(program, 'u_lightColor')
+  const specularColorLocation = gl.getUniformLocation(
+    program,
+    'u_specularColor'
   )
 
   // Create a buffer
@@ -82,6 +93,7 @@ const main = () => {
   const fieldOfViewRadians = degToRad(60)
   let rotationSpeed = 1.2
   let angle = 0
+  let shininess = 150
 
   let then = 0
 
@@ -98,6 +110,17 @@ const main = () => {
     min: -5,
     max: 5,
     value: rotationSpeed,
+  })
+  webglLessonsUI.setupSlider('#ui', {
+    name: 'shininess',
+    slide: (evt, data) => {
+      shininess = data.value
+    },
+    precision: 2,
+    step: 0.01,
+    min: 1,
+    max: 300,
+    value: shininess,
   })
 
   function drawScene(now: number) {
@@ -158,6 +181,7 @@ const main = () => {
     const worldInverseTransposeMatrix = m4.transpose(worldInverseMatrix)
 
     // Set the matrices
+    gl.uniformMatrix4fv(worldLocation, false, worldMatrix)
     gl.uniformMatrix4fv(
       worldViewProjectionLocation,
       false,
@@ -173,7 +197,15 @@ const main = () => {
     gl.uniform4fv(colorLocation, [0.2, 1, 0.2, 1]) // green
 
     // Set the light direction
-    gl.uniform3fv(reverseLightDirectionLocation, normalise([0.5, 0.7, 1]))
+    gl.uniform3fv(lightWorldPositionLocation, [20, 30, 50])
+
+    // Set the camera/view position
+    gl.uniform3fv(viewWorldPositionLocation, camera)
+
+    gl.uniform1f(shininessLocation, shininess)
+
+    gl.uniform3fv(lightColorLocation, normalise([1, 0.6, 0.6]))
+    gl.uniform3fv(specularColorLocation, normalise([1, 0.2, 0.2]))
 
     // Draw
     const primitiveType = gl.TRIANGLES
