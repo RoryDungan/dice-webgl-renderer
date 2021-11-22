@@ -3,13 +3,7 @@ const ESLintPlugin = require('eslint-webpack-plugin')
 
 module.exports = {
   entry: {
-    fundamentals: './src/fundamentals.ts',
-    '2d-translation': './src/2d-translation.ts',
-    '3d-ortho': './src/3d-ortho.ts',
-    '3d-perspective': './src/3d-perspective.ts',
-    '3d-camera': './src/3d-camera.ts',
-    '3d-shading': './src/3d-shading.ts',
-    '3d-spotlight': './src/3d-spotlight.ts',
+    'twgl-test': './src/twgl-test.ts',
   },
   module: {
     rules: [
