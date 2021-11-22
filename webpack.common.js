@@ -9,6 +9,7 @@ module.exports = {
     '3d-perspective': './src/3d-perspective.ts',
     '3d-camera': './src/3d-camera.ts',
     '3d-shading': './src/3d-shading.ts',
+    '3d-spotlight': './src/3d-spotlight.ts',
   },
   module: {
     rules: [
