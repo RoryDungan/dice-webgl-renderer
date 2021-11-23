@@ -440,3 +440,14 @@ export const m4 = {
     ]
   },
 }
+
+export const rand = (min: number, max?: number): number => {
+  if (max === undefined) {
+    max = min
+    min = 0
+  }
+  return min + Math.random() * (max - min)
+}
+
+export const emod = (x: number, n: number): number =>
+  x >= 0 ? x % n : (n - (-x % n)) % n

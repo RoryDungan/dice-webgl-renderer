@@ -3,7 +3,8 @@ const ESLintPlugin = require('eslint-webpack-plugin')
 
 module.exports = {
   entry: {
-    'twgl-test': './src/twgl-test.ts',
+    'draw-multiple': './src/draw-multiple.ts',
+    '3d-spotlight': './src/3d-spotlight.ts',
   },
   module: {
     rules: [
