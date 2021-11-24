@@ -98,6 +98,10 @@ function main() {
     gl.enable(gl.CULL_FACE)
     gl.enable(gl.DEPTH_TEST)
 
+    // Clear the canvas and the depth buffer
+    gl.clearColor(0, 0, 0, 1)
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+
     // Compute the projection matrix
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight
     const projectionMatrix = m4.perspective(fieldOfViewRadians, aspect, 1, 2000)
