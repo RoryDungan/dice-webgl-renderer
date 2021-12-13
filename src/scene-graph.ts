@@ -42,13 +42,17 @@ Node.prototype.updateWorldMatrix = function (parentWorldMatrix) {
   if (source) {
     source.getMatrix(this.localMatrix)
   }
+  else {
+    console.error('no matrix source!')
+  }
 
   // now process all the children
   const worldMatrix = this.worldMatrix
   this.children.forEach((child) => child.updateWorldMatrix(worldMatrix))
 }
 
-const TRS = function () {
+const TRS = function (name) {
+  this.name = name
   this.translation = [0, 0, 0]
   this.rotation = [0, 0, 0]
   this.scale = [1, 1, 1]
@@ -62,9 +66,11 @@ TRS.prototype.getMatrix = function (dst) {
 
   // compute a matrix from translation, rotation and scale
   m4.translation(t, dst)
+  // m4.rotationX(r[0], dst)
   m4.rotateX(dst, r[0], dst)
   m4.rotateY(dst, r[1], dst)
   m4.rotateZ(dst, r[2], dst)
+  // m4.translate(dst, t, dst)
   m4.scale(dst, s, dst)
   return dst
 }
@@ -98,11 +104,11 @@ const sphereVAO = twgl.createVAOFromBufferInfo(
 
 const fieldOfViewRadians = degToRad(60)
 
-const solarSystemTRS = new TRS(),
+const solarSystemTRS = new TRS('SolarSystem'),
   solarSystemNode = new Node(solarSystemTRS)
-const sunTRS = new TRS(),
+const sunTRS = new TRS('Sun'),
   sunNode = new Node(sunTRS)
-sunTRS.scaling = [5, 5, 5]
+sunTRS.scale = [5, 5, 5]
 sunNode.drawInfo = {
   uniforms: {
     u_colorOffset: [0.6, 0.6, 0, 1],
@@ -113,12 +119,14 @@ sunNode.drawInfo = {
   vertexARray: sphereVAO,
 }
 
-const earthOrbitTRS = new TRS(),
+const earthOrbitTRS = new TRS('EarthOrbit'),
   earthOrbitNode = new Node(earthOrbitTRS)
-earthOrbitTRS.translation = [100, 0, 0]
-const earthTRS = new TRS(),
+const earthTranslationTRS = new TRS('EarthTranslation'),
+  earthTranslationNode = new Node(earthTranslationTRS)
+earthTranslationTRS.translation = [100, 0, 0]
+const earthTRS = new TRS('Earth'),
   earthNode = new Node(earthTRS)
-earthTRS.scaling = [2, 2, 2]
+earthTRS.scale = [2, 2, 2]
 earthNode.drawInfo = {
   uniforms: {
     u_colorOffset: [0.2, 0.5, 0.8, 1],
@@ -129,12 +137,14 @@ earthNode.drawInfo = {
   vertexARray: sphereVAO,
 }
 
-const moonOrbitTRS = new TRS(),
+const moonOrbitTRS = new TRS('MoonOrbit'),
   moonOrbitNode = new Node(moonOrbitTRS)
-moonOrbitTRS.translation = [30, 0, 0]
-const moonTRS = new TRS(),
+const moonTranslationTRS = new TRS('MoonTranslation'),
+  moonTranslationNode = new Node(moonTranslationTRS)
+moonTranslationTRS.translation = [30, 0, 0]
+const moonTRS = new TRS('Moon'),
   moonNode = new Node(moonTRS)
-moonTRS.scaling = [0.4, 0.4, 0.4]
+moonTRS.scale = [0.4, 0.4, 0.4]
 moonNode.drawInfo = {
   uniforms: {
     u_colorOffset: [0.6, 0.6, 0.6, 1],
@@ -147,9 +157,11 @@ moonNode.drawInfo = {
 
 sunNode.setParent(solarSystemNode)
 earthOrbitNode.setParent(solarSystemNode)
-earthNode.setParent(earthOrbitNode)
-moonOrbitNode.setParent(earthOrbitNode)
-moonNode.setParent(moonOrbitNode)
+earthTranslationNode.setParent(earthOrbitNode)
+earthNode.setParent(earthTranslationNode)
+moonOrbitNode.setParent(earthTranslationNode)
+moonTranslationNode.setParent(moonOrbitNode)
+moonNode.setParent(moonTranslationNode)
 
 const objects = [sunNode, earthNode, moonNode]
 const objectsToDraw = objects.map((o) => o.drawInfo)
@@ -186,9 +198,9 @@ const drawScene = () => {
   earthOrbitTRS.rotation[1] += 0.01
   moonOrbitTRS.rotation[1] += 0.01
   // spin
-  // m4.multiply(m4.rotationY(0.005), sunNode.localMatrix, sunNode.localMatrix)
-  // m4.multiply(m4.rotationY(0.05), earthNode.localMatrix, earthNode.localMatrix)
-  // m4.multiply(m4.rotationY(-0.01), moonNode.localMatrix, moonNode.localMatrix)
+  sunTRS.rotation[1] += 0.005
+  earthTRS.rotation[1] += 0.05
+  moonTRS.rotation[1] -= 0.01
 
   solarSystemNode.updateWorldMatrix()
 
