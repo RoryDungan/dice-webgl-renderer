@@ -9,7 +9,8 @@ module.exports = {
     '3d-spotlight': './src/3d-spotlight.ts',
     'draw-multiple': './src/draw-multiple.ts',
     'scene-graph': './src/scene-graph.ts',
-    'twgl-test': './src/twgl-test.ts'
+    'twgl-test': './src/twgl-test.ts',
+    'obj-loading': './src/obj-loading.ts'
   },
   module: {
     rules: [
@@ -21,6 +22,10 @@ module.exports = {
       {
         test: /\.(frag|vert)$/,
         type: 'asset/source'
+      },
+      {
+        test: /\.(obj|mtl)$/,
+        type: 'asset/resource'
       }
     ],
   },
