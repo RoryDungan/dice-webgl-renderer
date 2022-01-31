@@ -10,7 +10,8 @@ module.exports = {
     'draw-multiple': './src/draw-multiple.ts',
     'scene-graph': './src/scene-graph.ts',
     'twgl-test': './src/twgl-test.ts',
-    'obj-loading': './src/obj-loading.ts'
+    // 'obj-loading': './src/obj-loading.ts'
+    'textures': './src/textures.ts'
   },
   module: {
     rules: [
@@ -25,6 +26,10 @@ module.exports = {
       },
       {
         test: /\.(obj|mtl)$/,
+        type: 'asset/resource'
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: 'asset/resource'
       }
     ],
